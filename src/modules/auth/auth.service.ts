@@ -17,9 +17,9 @@ export const loginUser = async (payload: LoginBody) => {
     throw new Error("Invalid email or password");
   }
 
-  if (!user.isActive) {
-    throw new Error("Your account has been disabled");
-  }
+  // if (!user.isActive) {
+  //   throw new Error("Your account has been disabled");
+  // }
 
   const isPasswordMatched = await comparePassword(
     payload.password,
@@ -30,28 +30,28 @@ export const loginUser = async (payload: LoginBody) => {
     throw new Error("Invalid email or password");
   }
 
-  await prisma.user.update({
-    where: {
-      id: user.id,
-    },
-    data: {
-      lastLogin: new Date(),
-    },
-  });
+  // await prisma.user.update({
+  //   where: {
+  //     id: user.id,
+  //   },
+  //   data: {
+  //     lastLogin: new Date(),
+  //   },
+  // });
 
-  const token = generateToken({
-    id: user.id,
-    email: user.email,
-    role: user.role.name,
-  });
+ const token = generateToken({
+  id: user.id,
+  email: user.email,
+  role: user.role.role,
+});
 
   return {
-    token,
-    user: {
-      id: user.id,
-      fullName: user.fullName,
-      email: user.email,
-      role: user.role.name,
-    },
-  };
+  token,
+  user: {
+    id: user.id,
+    fullName: user.fullName,
+    email: user.email,
+    role: user.role.role,
+  },
+};
 };

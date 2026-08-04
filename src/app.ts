@@ -3,6 +3,7 @@ import cors from "cors";
 import helmet from "helmet";
 import morgan from "morgan";
 import authRoutes from "./modules/auth";
+import profileRoutes from "./modules/profile/profile.routes";
 
 import healthRoutes from "./routes/health.routes";
 
@@ -34,6 +35,10 @@ app.use("/api", healthRoutes);
 
 // Authentication routes
 app.use("/api/auth", authRoutes);
+
+//Profile routes
+
+app.use("/api/profile", profileRoutes);
 
 // 404 Route
 app.use((req, res) => {

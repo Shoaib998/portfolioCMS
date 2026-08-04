@@ -33,28 +33,28 @@ model User {
 model Profile {
   id String @id @default(cuid())
 
-  userId String @unique
-  user   User   @relation(fields: [userId], references: [id])
-
+  headline    String?
   designation String?
   bio         String? @db.Text
 
-  phone   String?
-  website String?
+  phone           String?
+  alternatePhone  String?
 
-  address String?
-  city    String?
-  country String?
+  website  String?
+  location String?
+  country  String?
 
   profileImage String?
   resume       String?
 
-  github    String?
-  linkedin  String?
-  facebook  String?
+  github   String?
+  linkedin String?
+  facebook String?
   instagram String?
   twitter   String?
-  youtube   String?
+
+  userId String @unique
+  user   User @relation(fields: [userId], references: [id], onDelete: Cascade)
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
