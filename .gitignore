@@ -1,0 +1,17 @@
+node_modules/
+
+dist/
+
+.env
+
+logs/
+
+uploads/
+
+.prisma/
+
+.vscode/settings.json
+
+coverage/
+
+*.log

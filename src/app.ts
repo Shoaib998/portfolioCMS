@@ -1,0 +1,45 @@
+import express from "express";
+import cors from "cors";
+import helmet from "helmet";
+import morgan from "morgan";
+import authRoutes from "./modules/auth";
+
+import healthRoutes from "./routes/health.routes";
+
+
+const app = express();
+
+// Security Middleware
+app.use(helmet());
+app.use(cors());
+
+// Logging Middleware
+app.use(morgan("dev"));
+
+// Body Parser
+app.use(express.json());
+app.use(express.urlencoded({ extended: true }));
+
+// Default Route
+app.get("/", (req, res) => {
+  res.status(200).json({
+    success: true,
+    message: "🚀 Enterprise Portfolio CMS API Running Successfully",
+    version: "1.0.0",
+  });
+});
+
+// Health Check
+app.use("/api", healthRoutes);
+
+// Authentication routes
+app.use("/api/auth", authRoutes);
+
+// 404 Route
+app.use((req, res) => {
+  res.status(404).json({
+    success: false,
+    message: "Route Not Found",
+  });
+});
+export default app;
