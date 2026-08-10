@@ -2,9 +2,10 @@ import express from "express";
 import cors from "cors";
 import helmet from "helmet";
 import morgan from "morgan";
+import path from "path";
+
 import authRoutes from "./modules/auth";
 import profileRoutes from "./modules/profile/profile.routes";
-
 import healthRoutes from "./routes/health.routes";
 
 
@@ -20,6 +21,9 @@ app.use(morgan("dev"));
 // Body Parser
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
+
+// Path for images
+app.use("/uploads", express.static(path.join(process.cwd(), "uploads")));
 
 // Default Route
 app.get("/", (req, res) => {
