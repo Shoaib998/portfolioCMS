@@ -6,7 +6,9 @@ import path from "path";
 
 import authRoutes from "./modules/auth";
 import profileRoutes from "./modules/profile/profile.routes";
+import projectRoutes from "./modules/projects/project.routes";
 import healthRoutes from "./routes/health.routes";
+
 
 
 const app = express();
@@ -41,8 +43,10 @@ app.use("/api", healthRoutes);
 app.use("/api/auth", authRoutes);
 
 //Profile routes
-
 app.use("/api/profile", profileRoutes);
+
+//projects routes
+app.use("/api/projects", projectRoutes);
 
 // 404 Route
 app.use((req, res) => {
