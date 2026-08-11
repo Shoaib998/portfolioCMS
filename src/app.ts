@@ -8,6 +8,7 @@ import authRoutes from "./modules/auth";
 import profileRoutes from "./modules/profile/profile.routes";
 import projectRoutes from "./modules/projects/project.routes";
 import blogRoutes from "./modules/blogs/blog.routes";
+import contactRoutes from "./modules/contacts/contact.routes";
 import healthRoutes from "./routes/health.routes";
 
 
@@ -51,6 +52,9 @@ app.use("/api/projects", projectRoutes);
 
 //blog routes
 app.use("/api/blogs", blogRoutes);
+
+//contct routes
+app.use("/api/contact", contactRoutes);
 
 // 404 Route
 app.use((req, res) => {
