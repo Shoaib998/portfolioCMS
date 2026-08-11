@@ -130,14 +130,7 @@ export const updateProjectImage = async (
   res: Response
 ) => {
   try {
-    const user = (req as AuthRequest).user;
-
-    if (!user) {
-      return res.status(401).json({
-        success: false,
-        message: "Unauthorized",
-      });
-    }
+    const projectId = String(req.params.id);
 
     if (!req.file) {
       return res.status(400).json({
@@ -146,15 +139,13 @@ export const updateProjectImage = async (
       });
     }
 
-    const projectId = String(req.params.id);
+    const project = await projectService.getProjectById(projectId);
 
-    // Find existing project first
-    const existingProject =
-      await projectService.getProjectById(projectId);
-
-    if (!existingProject) {
-      // Delete newly uploaded file because project doesn't exist
-      fs.unlinkSync(req.file.path);
+    if (!project) {
+      // Uploaded file ko remove karo agar project exist nahi karta
+      if (req.file.path && fs.existsSync(req.file.path)) {
+        fs.unlinkSync(req.file.path);
+      }
 
       return res.status(404).json({
         success: false,
@@ -162,27 +153,20 @@ export const updateProjectImage = async (
       });
     }
 
-    // New image path
-    const imagePath =
-      `/uploads/projects/${req.file.filename}`;
-
-    // Delete old image if it exists
-    if (existingProject.projectImage) {
-      const oldImagePath = path.join(
-        process.cwd(),
-        existingProject.projectImage.replace(
-          /^\/uploads/,
-          "uploads"
-        )
-      );
+    // Purani image delete karo
+    if (project.projectImage) {
+      const oldImagePath = project.projectImage.startsWith("/")
+        ? project.projectImage.substring(1)
+        : project.projectImage;
 
       if (fs.existsSync(oldImagePath)) {
         fs.unlinkSync(oldImagePath);
       }
     }
 
-    // Update database
-    const project =
+    const imagePath = `/uploads/projects/${req.file.filename}`;
+
+    const updatedProject =
       await projectService.updateProjectImage(
         projectId,
         imagePath
@@ -191,13 +175,13 @@ export const updateProjectImage = async (
     return res.status(200).json({
       success: true,
       message: "Project image uploaded successfully",
-      data: project,
+      data: updatedProject,
     });
   } catch (error) {
     console.error(error);
 
-    // Cleanup newly uploaded file if something fails
-    if (req.file && fs.existsSync(req.file.path)) {
+    // Error ki situation mein newly uploaded file remove karo
+    if (req.file?.path && fs.existsSync(req.file.path)) {
       fs.unlinkSync(req.file.path);
     }
 

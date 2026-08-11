@@ -53,12 +53,12 @@ export class ProjectService {
   }
 
  async updateProjectImage(
-  projectId: string,
+  id: string,
   imagePath: string
 ) {
   return prisma.project.update({
     where: {
-      id: projectId,
+      id,
     },
     data: {
       projectImage: imagePath,
