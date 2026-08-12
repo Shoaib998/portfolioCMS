@@ -22,6 +22,10 @@ const storage = multer.diskStorage({
       folder = "uploads/blogs";
     }
 
+    if (file.fieldname === "galleryImage") {
+      folder = "uploads/gallery";
+    }
+
     if (!fs.existsSync(folder)) {
       fs.mkdirSync(folder, { recursive: true });
     }

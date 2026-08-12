@@ -11,6 +11,7 @@ import blogRoutes from "./modules/blogs/blog.routes";
 import contactRoutes from "./modules/contacts/contact.routes";
 import serviceRoutes from "./modules/services/service.routes";
 import skillRoutes from "./modules/skills/skill.routes";
+import galleryRoutes from "./modules/gallery/gallery.routes";
 import healthRoutes from "./routes/health.routes";
 
 
@@ -63,6 +64,9 @@ app.use("/api/services", serviceRoutes);
 
 //skills routes
 app.use("/api/skills", skillRoutes);
+
+//gallery routes
+app.use("/api/gallery", galleryRoutes);
 
 // 404 Route
 app.use((req, res) => {
