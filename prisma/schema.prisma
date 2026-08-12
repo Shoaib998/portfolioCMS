@@ -137,3 +137,22 @@ model Service {
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 }
+
+model Skill {
+  id String @id @default(cuid())
+
+  name String
+  slug String @unique
+
+  category String?
+  proficiency String?
+  percentage Int?
+
+  icon String?
+
+  sortOrder Int @default(0)
+  isActive Boolean @default(true)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
