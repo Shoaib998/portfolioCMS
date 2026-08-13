@@ -64,6 +64,33 @@ export class SettingsService {
       },
     });
   }
+
+  // Update Resume
+async updateResume(
+  id: string,
+  resumePath: string
+) {
+  return prisma.settings.update({
+    where: {
+      id,
+    },
+    data: {
+      resume: resumePath,
+    },
+  });
+}
+
+// Remove Resume
+async removeResume(id: string) {
+  return prisma.settings.update({
+    where: {
+      id,
+    },
+    data: {
+      resume: null,
+    },
+  });
+}
 }
 
 export default new SettingsService();

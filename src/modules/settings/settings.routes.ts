@@ -5,14 +5,19 @@ import {
   updateSettings,
   updateLogo,
   updateFavicon,
+  updateResume,
+  deleteResume,
 } from "./settings.controller";
 
 import { authMiddleware } from "../../middlewares/auth.middleware";
 import { validate } from "../../middlewares/validate.middleware";
 
-import { updateSettingsSchema } from "./settings.validation";
+import {
+  upload,
+  resumeUpload,
+} from "../../middlewares/upload.middleware";
 
-import { upload } from "../../middlewares/upload.middleware";
+import { updateSettingsSchema } from "./settings.validation";
 
 const router = Router();
 
@@ -49,6 +54,21 @@ router.patch(
   authMiddleware,
   upload.single("favicon"),
   updateFavicon
+);
+
+// Upload resume
+router.patch(
+  "/resume",
+  authMiddleware,
+  resumeUpload.single("resume"),
+  updateResume
+);
+
+// Delete resume
+router.delete(
+  "/resume",
+  authMiddleware,
+  deleteResume
 );
 
 export default router;

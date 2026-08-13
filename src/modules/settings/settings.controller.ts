@@ -9,8 +9,7 @@ export const getSettings = async (
   res: Response
 ) => {
   try {
-    const settings =
-      await settingsService.getSettings();
+    const settings = await settingsService.getSettings();
 
     return res.status(200).json({
       success: true,
@@ -31,10 +30,9 @@ export const updateSettings = async (
   res: Response
 ) => {
   try {
-    const settings =
-      await settingsService.updateSettings(
-        req.body
-      );
+    const settings = await settingsService.updateSettings(
+      req.body
+    );
 
     return res.status(200).json({
       success: true,
@@ -63,8 +61,7 @@ export const updateLogo = async (
       });
     }
 
-    const settings =
-      await settingsService.getSettings();
+    const settings = await settingsService.getSettings();
 
     const imagePath =
       `/uploads/settings/${req.file.filename}`;
@@ -124,8 +121,7 @@ export const updateFavicon = async (
       });
     }
 
-    const settings =
-      await settingsService.getSettings();
+    const settings = await settingsService.getSettings();
 
     const imagePath =
       `/uploads/settings/${req.file.filename}`;
@@ -169,6 +165,126 @@ export const updateFavicon = async (
     return res.status(500).json({
       success: false,
       message: "Failed to upload favicon",
+    });
+  }
+};
+
+// ====================
+// Resume Upload
+// ====================
+
+export const updateResume = async (
+  req: Request,
+  res: Response
+) => {
+  try {
+    if (!req.file) {
+      return res.status(400).json({
+        success: false,
+        message: "Resume file is required",
+      });
+    }
+
+    const settings = await settingsService.getSettings();
+
+    const resumePath =
+      `/uploads/resumes/${req.file.filename}`;
+
+    // Save old resume path before updating DB
+    const oldResumePath = settings.resume
+      ? path.join(
+          process.cwd(),
+          settings.resume.replace(
+            /^\/uploads/,
+            "uploads"
+          )
+        )
+      : null;
+
+    const updatedSettings =
+      await settingsService.updateResume(
+        settings.id,
+        resumePath
+      );
+
+    // Delete old resume after successful DB update
+    if (
+      oldResumePath &&
+      fs.existsSync(oldResumePath)
+    ) {
+      fs.unlinkSync(oldResumePath);
+    }
+
+    return res.status(200).json({
+      success: true,
+      message: "Resume uploaded successfully",
+      data: updatedSettings,
+    });
+  } catch (error) {
+    console.error(error);
+
+    // Delete newly uploaded file if DB update fails
+    if (
+      req.file &&
+      fs.existsSync(req.file.path)
+    ) {
+      fs.unlinkSync(req.file.path);
+    }
+
+    return res.status(500).json({
+      success: false,
+      message: "Failed to upload resume",
+    });
+  }
+};
+
+// ====================
+// Resume Delete
+// ====================
+
+export const deleteResume = async (
+  req: Request,
+  res: Response
+) => {
+  try {
+    const settings = await settingsService.getSettings();
+
+    if (!settings.resume) {
+      return res.status(404).json({
+        success: false,
+        message: "Resume not found",
+      });
+    }
+
+    const resumePath = path.join(
+      process.cwd(),
+      settings.resume.replace(
+        /^\/uploads/,
+        "uploads"
+      )
+    );
+
+    const updatedSettings =
+      await settingsService.removeResume(
+        settings.id
+      );
+
+    // Delete physical file
+    if (fs.existsSync(resumePath)) {
+      fs.unlinkSync(resumePath);
+    }
+
+    return res.status(200).json({
+      success: true,
+      message: "Resume deleted successfully",
+      data: updatedSettings,
+    });
+  } catch (error) {
+    console.error(error);
+
+    return res.status(500).json({
+      success: false,
+      message: "Failed to delete resume",
     });
   }
 };
