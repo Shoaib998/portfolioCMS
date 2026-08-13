@@ -174,3 +174,58 @@ model Gallery {
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 }
+
+model Testimonial {
+  id String @id @default(cuid())
+
+  name String
+  designation String?
+  company String?
+
+  message String @db.Text
+
+  avatar String?
+  rating Int @default(5)
+
+  sortOrder Int @default(0)
+  isActive Boolean @default(true)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([isActive])
+  @@index([sortOrder])
+}
+
+model Settings {
+  id String @id @default(cuid())
+
+  siteName        String?
+  siteTitle       String?
+  siteDescription String? @db.Text
+
+  logo    String?
+  favicon String?
+
+  email String? @map("contactEmail")
+  phone String? @map("contactPhone")
+  address String? @db.Text
+
+  linkedin  String?
+  github    String?
+  facebook  String?
+  instagram String?
+  twitter   String?
+
+  resume String?
+
+  primaryColor    String?
+  secondaryColor  String?
+
+  maintenanceMode Boolean @default(false)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@map("setting")
+}

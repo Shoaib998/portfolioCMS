@@ -26,6 +26,18 @@ const storage = multer.diskStorage({
       folder = "uploads/gallery";
     }
 
+    if (file.fieldname === "logo") {
+      folder = "uploads/settings";
+    }
+
+    if (file.fieldname === "favicon") {
+      folder = "uploads/settings";
+    }
+
+    if (file.fieldname === "testimonialAvatar") {
+      folder = "uploads/testimonials";
+    }
+
     if (!fs.existsSync(folder)) {
       fs.mkdirSync(folder, { recursive: true });
     }

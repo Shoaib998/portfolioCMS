@@ -12,6 +12,9 @@ import contactRoutes from "./modules/contacts/contact.routes";
 import serviceRoutes from "./modules/services/service.routes";
 import skillRoutes from "./modules/skills/skill.routes";
 import galleryRoutes from "./modules/gallery/gallery.routes";
+import settingsRoutes from "./modules/settings/settings.routes";
+import testimonialRoutes from "./modules/testimonials/testimonial.routes";
+import dashboardRoutes from "./modules/dashboard/dashboard.routes";
 import healthRoutes from "./routes/health.routes";
 
 
@@ -67,6 +70,15 @@ app.use("/api/skills", skillRoutes);
 
 //gallery routes
 app.use("/api/gallery", galleryRoutes);
+
+//testimonials routes
+app.use("/api/testimonials", testimonialRoutes);
+
+//Dashboard Routes
+app.use("/api/dashboard", dashboardRoutes);
+
+//setting routes
+app.use("/api/settings", settingsRoutes);
 
 // 404 Route
 app.use((req, res) => {
