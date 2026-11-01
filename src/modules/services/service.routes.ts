@@ -11,6 +11,7 @@ import {
 } from "./service.controller";
 
 import { authMiddleware } from "../../middlewares/auth.middleware";
+import { roleMiddleware } from "../../middlewares/role.middleware";
 import { validate } from "../../middlewares/validate.middleware";
 
 import {
@@ -24,26 +25,23 @@ const router = Router();
 // Public Routes
 // ====================
 
-// Get all services
 router.get("/", getServices);
 
-// Get active services
 router.get("/active", getActiveServices);
 
-// Get service by slug
 router.get("/slug/:slug", getServiceBySlug);
 
-// Get service by ID
 router.get("/:id", getServiceById);
 
 // ====================
-// Protected Routes
+// Admin Protected Routes
 // ====================
 
 // Create service
 router.post(
   "/",
   authMiddleware,
+  roleMiddleware("admin"),
   validate(createServiceSchema),
   createService
 );
@@ -52,6 +50,7 @@ router.post(
 router.put(
   "/:id",
   authMiddleware,
+  roleMiddleware("admin"),
   validate(updateServiceSchema),
   updateService
 );
@@ -60,6 +59,7 @@ router.put(
 router.delete(
   "/:id",
   authMiddleware,
+  roleMiddleware("admin"),
   deleteService
 );
 

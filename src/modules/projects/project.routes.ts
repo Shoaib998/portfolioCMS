@@ -10,6 +10,8 @@ import {
 } from "./project.controller";
 
 import { authMiddleware } from "../../middlewares/auth.middleware";
+import { roleMiddleware } from "../../middlewares/role.middleware";
+
 import { validate } from "../../middlewares/validate.middleware";
 import { upload } from "../../middlewares/upload.middleware";
 
@@ -20,15 +22,22 @@ import {
 
 const router = Router();
 
-// Public
+// ====================
+// Public Routes
+// ====================
+
 router.get("/", getProjects);
 
 router.get("/:id", getProjectById);
 
-// Protected
+// ====================
+// Admin Protected Routes
+// ====================
+
 router.post(
   "/",
   authMiddleware,
+  roleMiddleware("admin"),
   validate(createProjectSchema),
   createProject
 );
@@ -36,14 +45,15 @@ router.post(
 router.put(
   "/:id",
   authMiddleware,
+  roleMiddleware("admin"),
   validate(updateProjectSchema),
   updateProject
 );
 
-// Project Image Upload
 router.patch(
   "/:id/image",
   authMiddleware,
+  roleMiddleware("admin"),
   upload.single("projectImage"),
   updateProjectImage
 );
@@ -51,6 +61,7 @@ router.patch(
 router.delete(
   "/:id",
   authMiddleware,
+  roleMiddleware("admin"),
   deleteProject
 );
 

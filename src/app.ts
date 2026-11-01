@@ -15,15 +15,25 @@ import galleryRoutes from "./modules/gallery/gallery.routes";
 import settingsRoutes from "./modules/settings/settings.routes";
 import testimonialRoutes from "./modules/testimonials/testimonial.routes";
 import dashboardRoutes from "./modules/dashboard/dashboard.routes";
+import { errorMiddleware } from "./middlewares/error.middleware";
 import healthRoutes from "./routes/health.routes";
-
-
 
 const app = express();
 
 // Security Middleware
-app.use(helmet());
+app.use(
+  helmet({
+    crossOriginResourcePolicy: { policy: "cross-origin" },
+  })
+);
+
 app.use(cors());
+
+// Serve uploaded profile images, resumes and other files
+app.use(
+  "/uploads",
+  express.static(path.join(process.cwd(), "uploads"))
+);
 
 // Logging Middleware
 app.use(morgan("dev"));
@@ -32,8 +42,7 @@ app.use(morgan("dev"));
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
-// Path for images
-app.use("/uploads", express.static(path.join(process.cwd(), "uploads")));
+// Default Route
 
 // Default Route
 app.get("/", (req, res) => {
@@ -80,11 +89,21 @@ app.use("/api/dashboard", dashboardRoutes);
 //setting routes
 app.use("/api/settings", settingsRoutes);
 
+// =========================
 // 404 Route
+// =========================
+
 app.use((req, res) => {
   res.status(404).json({
     success: false,
     message: "Route Not Found",
   });
 });
+
+// =========================
+// Global Error Handler
+// =========================
+
+app.use(errorMiddleware);
+
 export default app;

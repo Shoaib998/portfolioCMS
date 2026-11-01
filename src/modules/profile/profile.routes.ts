@@ -9,7 +9,10 @@ import {
 
 import { validate } from "../../middlewares/validate.middleware";
 import { updateProfileSchema } from "./profile.validation";
+
 import { authMiddleware } from "../../middlewares/auth.middleware";
+import { roleMiddleware } from "../../middlewares/role.middleware";
+
 import {
   upload,
   resumeUpload,
@@ -17,29 +20,39 @@ import {
 
 const router = Router();
 
+// ====================
 // Public
+// ====================
+
 router.get("/", getProfile);
 
-// Protected
+// ====================
+// Admin Protected
+// ====================
+
+// Update profile
 router.put(
   "/",
   authMiddleware,
+  roleMiddleware("admin"),
   validate(updateProfileSchema),
   updateProfile
 );
 
-// Profile Image Upload
+// Profile image upload
 router.patch(
   "/image",
   authMiddleware,
+  roleMiddleware("admin"),
   upload.single("profileImage"),
   updateProfileImage
 );
 
-// Resume Upload
+// Resume upload
 router.patch(
   "/resume",
   authMiddleware,
+  roleMiddleware("admin"),
   resumeUpload.single("resume"),
   updateResume
 );

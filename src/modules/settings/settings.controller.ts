@@ -49,6 +49,10 @@ export const updateSettings = async (
   }
 };
 
+// ====================
+// Logo Upload
+// ====================
+
 export const updateLogo = async (
   req: Request,
   res: Response
@@ -66,26 +70,31 @@ export const updateLogo = async (
     const imagePath =
       `/uploads/settings/${req.file.filename}`;
 
-    // Delete old logo
-    if (settings.logo) {
-      const oldLogoPath = path.join(
-        process.cwd(),
-        settings.logo.replace(
-          /^\/uploads/,
-          "uploads"
+    // Save old logo path before updating DB
+    const oldLogoPath = settings.logo
+      ? path.join(
+          process.cwd(),
+          settings.logo.replace(
+            /^\/uploads/,
+            "uploads"
+          )
         )
-      );
+      : null;
 
-      if (fs.existsSync(oldLogoPath)) {
-        fs.unlinkSync(oldLogoPath);
-      }
-    }
-
+    // Update DB first
     const updatedSettings =
       await settingsService.updateLogo(
         settings.id,
         imagePath
       );
+
+    // Delete old logo only after successful DB update
+    if (
+      oldLogoPath &&
+      fs.existsSync(oldLogoPath)
+    ) {
+      fs.unlinkSync(oldLogoPath);
+    }
 
     return res.status(200).json({
       success: true,
@@ -95,6 +104,7 @@ export const updateLogo = async (
   } catch (error) {
     console.error(error);
 
+    // Delete newly uploaded file if DB update fails
     if (
       req.file &&
       fs.existsSync(req.file.path)
@@ -108,6 +118,10 @@ export const updateLogo = async (
     });
   }
 };
+
+// ====================
+// Favicon Upload
+// ====================
 
 export const updateFavicon = async (
   req: Request,
@@ -126,26 +140,31 @@ export const updateFavicon = async (
     const imagePath =
       `/uploads/settings/${req.file.filename}`;
 
-    // Delete old favicon
-    if (settings.favicon) {
-      const oldFaviconPath = path.join(
-        process.cwd(),
-        settings.favicon.replace(
-          /^\/uploads/,
-          "uploads"
+    // Save old favicon path before updating DB
+    const oldFaviconPath = settings.favicon
+      ? path.join(
+          process.cwd(),
+          settings.favicon.replace(
+            /^\/uploads/,
+            "uploads"
+          )
         )
-      );
+      : null;
 
-      if (fs.existsSync(oldFaviconPath)) {
-        fs.unlinkSync(oldFaviconPath);
-      }
-    }
-
+    // Update DB first
     const updatedSettings =
       await settingsService.updateFavicon(
         settings.id,
         imagePath
       );
+
+    // Delete old favicon only after successful DB update
+    if (
+      oldFaviconPath &&
+      fs.existsSync(oldFaviconPath)
+    ) {
+      fs.unlinkSync(oldFaviconPath);
+    }
 
     return res.status(200).json({
       success: true,
@@ -155,6 +174,7 @@ export const updateFavicon = async (
   } catch (error) {
     console.error(error);
 
+    // Delete newly uploaded file if DB update fails
     if (
       req.file &&
       fs.existsSync(req.file.path)
@@ -201,13 +221,14 @@ export const updateResume = async (
         )
       : null;
 
+    // Update DB first
     const updatedSettings =
       await settingsService.updateResume(
         settings.id,
         resumePath
       );
 
-    // Delete old resume after successful DB update
+    // Delete old resume only after successful DB update
     if (
       oldResumePath &&
       fs.existsSync(oldResumePath)
@@ -264,12 +285,13 @@ export const deleteResume = async (
       )
     );
 
+    // Update DB first
     const updatedSettings =
       await settingsService.removeResume(
         settings.id
       );
 
-    // Delete physical file
+    // Delete physical file after successful DB update
     if (fs.existsSync(resumePath)) {
       fs.unlinkSync(resumePath);
     }

@@ -10,6 +10,7 @@ import {
 } from "./settings.controller";
 
 import { authMiddleware } from "../../middlewares/auth.middleware";
+import { roleMiddleware } from "../../middlewares/role.middleware";
 import { validate } from "../../middlewares/validate.middleware";
 
 import {
@@ -36,6 +37,7 @@ router.get("/", getSettings);
 router.put(
   "/",
   authMiddleware,
+  roleMiddleware("admin"),
   validate(updateSettingsSchema),
   updateSettings
 );
@@ -44,6 +46,7 @@ router.put(
 router.patch(
   "/logo",
   authMiddleware,
+  roleMiddleware("admin"),
   upload.single("logo"),
   updateLogo
 );
@@ -52,6 +55,7 @@ router.patch(
 router.patch(
   "/favicon",
   authMiddleware,
+  roleMiddleware("admin"),
   upload.single("favicon"),
   updateFavicon
 );
@@ -60,14 +64,15 @@ router.patch(
 router.patch(
   "/resume",
   authMiddleware,
+  roleMiddleware("admin"),
   resumeUpload.single("resume"),
   updateResume
 );
 
-// Delete resume
 router.delete(
   "/resume",
   authMiddleware,
+  roleMiddleware("admin"),
   deleteResume
 );
 

@@ -3,27 +3,33 @@ import { loginUser } from "./auth.service";
 import { loginSchema } from "./auth.validation";
 import { AuthRequest } from "../../middlewares/auth.middleware";
 
-export const login = async (req: Request, res: Response) => {
+export const login = async (
+  req: Request,
+  res: Response
+) => {
   try {
     const payload = loginSchema.parse(req.body);
 
     const result = await loginUser(payload);
 
-    res.status(200).json({
+    return res.status(200).json({
       success: true,
       message: "Login successful",
       data: result,
     });
   } catch (error: any) {
-    res.status(400).json({
+    return res.status(401).json({
       success: false,
-      message: error.message,
+      message: error.message || "Invalid email or password",
     });
   }
 };
 
-export const me = async (req: AuthRequest, res: Response) => {
-  res.status(200).json({
+export const me = async (
+  req: AuthRequest,
+  res: Response
+) => {
+  return res.status(200).json({
     success: true,
     data: req.user,
   });

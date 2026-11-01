@@ -11,6 +11,7 @@ import {
 } from "./testimonial.controller";
 
 import { authMiddleware } from "../../middlewares/auth.middleware";
+import { roleMiddleware } from "../../middlewares/role.middleware";
 import { validate } from "../../middlewares/validate.middleware";
 
 import {
@@ -26,23 +27,21 @@ const router = Router();
 // Public Routes
 // ====================
 
-// Get all testimonials
 router.get("/", getTestimonials);
 
-// Get active testimonials
 router.get("/active", getActiveTestimonials);
 
-// Get testimonial by ID
 router.get("/:id", getTestimonialById);
 
 // ====================
-// Protected Routes
+// Admin Protected Routes
 // ====================
 
 // Create testimonial
 router.post(
   "/",
   authMiddleware,
+  roleMiddleware("admin"),
   validate(createTestimonialSchema),
   createTestimonial
 );
@@ -51,6 +50,7 @@ router.post(
 router.patch(
   "/:id/avatar",
   authMiddleware,
+  roleMiddleware("admin"),
   upload.single("testimonialAvatar"),
   updateTestimonialAvatar
 );
@@ -59,6 +59,7 @@ router.patch(
 router.put(
   "/:id",
   authMiddleware,
+  roleMiddleware("admin"),
   validate(updateTestimonialSchema),
   updateTestimonial
 );
@@ -67,6 +68,7 @@ router.put(
 router.delete(
   "/:id",
   authMiddleware,
+  roleMiddleware("admin"),
   deleteTestimonial
 );
 

@@ -13,6 +13,7 @@ import {
 } from "./blog.controller";
 
 import { authMiddleware } from "../../middlewares/auth.middleware";
+import { roleMiddleware } from "../../middlewares/role.middleware";
 import { validate } from "../../middlewares/validate.middleware";
 
 import {
@@ -26,34 +27,32 @@ const router = Router();
 // Public Routes
 // ====================
 
-// Get all blogs
 router.get("/", getBlogs);
 
-// Get published blogs
 router.get("/published", getPublishedBlogs);
 
-// Get blog by slug
 router.get("/slug/:slug", getBlogBySlug);
 
-// Get blog by ID
 router.get("/:id", getBlogById);
 
 // ====================
-// Protected Routes
+// Admin Protected Routes
 // ====================
 
 // Create blog
 router.post(
   "/",
   authMiddleware,
+  roleMiddleware("admin"),
   validate(createBlogSchema),
   createBlog
 );
 
-//blog image
+// Blog image
 router.patch(
   "/:id/image",
   authMiddleware,
+  roleMiddleware("admin"),
   upload.single("blogImage"),
   updateBlogImage
 );
@@ -62,6 +61,7 @@ router.patch(
 router.put(
   "/:id",
   authMiddleware,
+  roleMiddleware("admin"),
   validate(updateBlogSchema),
   updateBlog
 );
@@ -70,9 +70,8 @@ router.put(
 router.delete(
   "/:id",
   authMiddleware,
+  roleMiddleware("admin"),
   deleteBlog
 );
-
-
 
 export default router;

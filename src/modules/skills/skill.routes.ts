@@ -11,6 +11,7 @@ import {
 } from "./skill.controller";
 
 import { authMiddleware } from "../../middlewares/auth.middleware";
+import { roleMiddleware } from "../../middlewares/role.middleware";
 import { validate } from "../../middlewares/validate.middleware";
 
 import {
@@ -37,13 +38,14 @@ router.get("/slug/:slug", getSkillBySlug);
 router.get("/:id", getSkillById);
 
 // ====================
-// Protected Routes
+// Admin Protected Routes
 // ====================
 
 // Create skill
 router.post(
   "/",
   authMiddleware,
+  roleMiddleware("admin"),
   validate(createSkillSchema),
   createSkill
 );
@@ -52,6 +54,7 @@ router.post(
 router.put(
   "/:id",
   authMiddleware,
+  roleMiddleware("admin"),
   validate(updateSkillSchema),
   updateSkill
 );
@@ -60,6 +63,7 @@ router.put(
 router.delete(
   "/:id",
   authMiddleware,
+  roleMiddleware("admin"),
   deleteSkill
 );
 

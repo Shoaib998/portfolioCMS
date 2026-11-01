@@ -111,19 +111,17 @@ export class DashboardService {
         },
       }),
 
-      // =========================
-      // Contacts
-      // =========================
+     // =========================
+     // Contacts
+     // =========================
 
       prisma.contact.count(),
 
-      prisma.contact.count({
+       prisma.contact.count({
         where: {
-          status: {
-            not: "read",
-          },
+         status: "new",
         },
-      }),
+     }),
 
       // =========================
       // Recent Projects

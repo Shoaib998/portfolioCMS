@@ -9,6 +9,7 @@ import {
 } from "./contact.controller";
 
 import { authMiddleware } from "../../middlewares/auth.middleware";
+import { roleMiddleware } from "../../middlewares/role.middleware";
 import { validate } from "../../middlewares/validate.middleware";
 
 import {
@@ -30,13 +31,14 @@ router.post(
 );
 
 // ====================
-// Protected Admin Routes
+// Admin Protected Routes
 // ====================
 
 // Get all contact messages
 router.get(
   "/",
   authMiddleware,
+  roleMiddleware("admin"),
   getContacts
 );
 
@@ -44,6 +46,7 @@ router.get(
 router.get(
   "/:id",
   authMiddleware,
+  roleMiddleware("admin"),
   getContactById
 );
 
@@ -51,6 +54,7 @@ router.get(
 router.patch(
   "/:id",
   authMiddleware,
+  roleMiddleware("admin"),
   validate(updateContactSchema),
   updateContact
 );
@@ -59,6 +63,7 @@ router.patch(
 router.delete(
   "/:id",
   authMiddleware,
+  roleMiddleware("admin"),
   deleteContact
 );
 
